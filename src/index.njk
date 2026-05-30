@@ -310,11 +310,11 @@
      Change the order in home.json (or via CMS) to reorder sections.
      ────────────────────────────────────────────────────────── #}
   {% for sectionKey in home.section_order %}
-    {% if sectionKey === "about" %}
+    {% if sectionKey == "about" %}
       {{ sectionAbout() }}
-    {% elif sectionKey === "offer" %}
+    {% elif sectionKey == "offer" %}
       {{ sectionOffer() }}
-    {% elif sectionKey === "help" %}
+    {% elif sectionKey == "help" %}
       {{ sectionHelp() }}
     {% endif %}
   {% endfor %}
