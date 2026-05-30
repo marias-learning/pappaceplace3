@@ -1,87 +1,284 @@
-# =============================================================
-# BACKEND — tells Sveltia CMS where content lives and how
-# to authenticate. All edits made in the CMS get committed
-# directly to your GitHub repo as real files.
-# =============================================================
-backend:
-  name: github                          # we're using GitHub as the content store
-  repo: marias-learning/pappaceplace3    # replace with your actual GitHub repo
-  branch: main                          # edits commit to this branch
+# ============================================================
+# PAPPACE PLACE LEARNING STUDIO — CMS Configuration
+# src/admin/config.yml
+#
+# This file controls what your friend sees and can edit
+# in the Sveltia CMS admin portal at /admin/.
+#
+# HOW IT WORKS:
+# - "collections" defines the editable sections
+# - Each "field" maps to a key in src/_data/home.json
+# - When your friend saves a change in the CMS, Sveltia
+#   commits the updated home.json directly to GitHub,
+#   which triggers a fresh Cloudflare Pages build
+#   automatically — the live site updates in ~30 seconds
+#
+# WIDGET TYPES USED HERE:
+# - string  = single line text input
+# - text    = multi-line text area (no formatting)
+# - image   = file upload picker (saves to media_folder)
+# - list    = repeatable group of fields (cards, items)
+#
+# TO ADD A NEW FIELD:
+# 1. Add the field here under the right section
+# 2. Add the matching key to src/_data/home.json
+# 3. Reference it in index.njk with {{ home.your_key }}
+# ============================================================
 
-  # This points to the Cloudflare Worker you deploy in Phase 4.
-  # It handles the GitHub OAuth login flow so your friend can
-  # log in with a "Login with GitHub" button instead of managing
-  # personal access tokens. Fill this in after Phase 4.
+
+# ============================================================
+# BACKEND — where content is stored and how the CMS logs in.
+# "github" means all edits commit directly to your GitHub
+# repo as real files. No separate database, no vendor lock-in.
+# Everything lives in Git alongside your code.
+# ============================================================
+backend:
+  name: github                           # use GitHub as the content store
+  repo: marias-learning/pappaceplace3   # your GitHub repo
+  branch: main                           # edits commit to this branch
+
+  # The Cloudflare Worker that handles GitHub OAuth login.
+  # This is the worker you deployed in Phase 4 — it lets
+  # your friend log in with "Login with GitHub" instead of
+  # managing personal access tokens.
+  # Replace this with your actual worker URL.
   base_url: https://sveltia-cms-auth.maria-b19.workers.dev
 
 
-# =============================================================
-# MEDIA — where uploaded images get stored in the repo,
-# and what path gets written into the HTML/content files.
-# =============================================================
-
-# Where Sveltia saves uploaded files inside the repo
+# ============================================================
+# MEDIA — controls where uploaded images are stored.
+#
+# media_folder: where Sveltia saves uploaded files in the repo
+# public_folder: the URL path written into content fields
+#   e.g. an uploaded file becomes /images/uploads/photo.jpg
+#   in the built site
+# ============================================================
 media_folder: "src/images/uploads"
-
-# The public URL path that gets written into content files
-# (e.g. an img tag will use /images/uploads/photo.jpg)
 public_folder: "/images/uploads"
 
 
-# =============================================================
-# COLLECTIONS — these define what your friend can edit
-# in the CMS. Each collection maps to a file (or folder
-# of files) in the repo.
+# ============================================================
+# COLLECTIONS — the editable content sections in the CMS.
 #
-# "files" type = a fixed set of named files (good for
-# single-page site settings, about text, contact info, etc.)
-#
-# "folder" type = a growing list of items like blog posts
-# or testimonials (we can add those later).
-# =============================================================
+# This site uses a single "files" collection (as opposed to
+# a "folder" collection which would be for blog posts etc).
+# "files" = a fixed set of named files, perfect for a
+# one-page site where every section is always present.
+# ============================================================
 collections:
-
-  # --- SITE SETTINGS ---
-  # This gives your friend one place to update all the core
-  # info about the business. Each field below maps to a key
-  # in src/_data/site.json, which your Nunjucks templates
-  # can then reference as {{ site.tutorName }} etc.
-  - name: "site_settings"        # internal ID, used by Sveltia
-    label: "Site Settings"       # what your friend sees in the CMS sidebar
+  - name: "pages"       # internal ID used by Sveltia
+    label: "Site Content" # what appears in the CMS sidebar
     files:
 
-      - name: "general"
-        label: "General Info"
-        file: "src/_data/site.json"   # the actual file this edits in the repo
+      # ----------------------------------------------------------
+      # HOME PAGE
+      # Maps to: src/_data/home.json
+      # Every field below corresponds to a key in that file.
+      # ----------------------------------------------------------
+      - name: "home"
+        label: "Home Page"
+        file: "src/_data/home.json"
         fields:
 
-          # "string" widget = single line text input
-          - label: "Tutor Name"
-            name: "tutorName"
-            widget: "string"
 
-          - label: "Tagline"
-            name: "tagline"
-            widget: "string"
-            hint: "Short line that appears under the name, e.g. 'Math & Reading Tutor'"
-            # "hint" shows helper text below the field in the CMS editor
+          # ── SEO ───────────────────────────────────────────────
+          # These fields control how the site appears in Google
+          # search results and in the browser tab.
+          # ──────────────────────────────────────────────────────
 
-          # "text" widget = multi-line text area (no formatting)
-          - label: "About Text"
-            name: "about"
+          - label: "Page Title"
+            name: "meta_title"
+            widget: "string"
+            hint: "Shown in the browser tab and Google results. Keep under 60 characters."
+
+          - label: "Meta Description"
+            name: "meta_description"
             widget: "text"
-            hint: "The paragraph that appears in the About section"
+            hint: "Shown under the link in Google results. Keep under 160 characters."
 
-          - label: "Phone"
+
+          # ── HERO ──────────────────────────────────────────────
+          # The first section visitors see — big heading,
+          # tagline sentence, and optional accent image.
+          # The heading 'Every student can thrive.' is hardcoded
+          # in index.njk — only the tagline is editable here.
+          # ──────────────────────────────────────────────────────
+
+          - label: "Hero: Tagline"
+            name: "hero_tagline"
+            widget: "string"
+            hint: "The sentence shown under 'Every student can thrive.'"
+
+          - label: "Hero: Image"
+            name: "hero_image"
+            widget: "image"
+            required: false
+            hint: "Optional. If uploaded, replaces the animated blob graphic. Leave blank to keep the blob."
+
+
+          # ── ABOUT ─────────────────────────────────────────────
+          # Two-column section: text and paragraphs on the left,
+          # value cards on the right.
+          # ──────────────────────────────────────────────────────
+
+          - label: "About: Heading"
+            name: "about_heading"
+            widget: "string"
+            hint: "e.g. 'A place where students feel at home.'"
+
+          - label: "About: Paragraph 1"
+            name: "about_p1"
+            widget: "text"
+            hint: "First paragraph describing the studio."
+
+          - label: "About: Paragraph 2"
+            name: "about_p2"
+            widget: "text"
+            hint: "Second paragraph — approach and philosophy."
+
+          - label: "About: Miss Maria Bio"
+            name: "about_bio"
+            widget: "text"
+            required: false
+            hint: "Optional extra paragraph about Miss Maria personally. Leave blank to hide."
+
+          - label: "About: Photo"
+            name: "about_image"
+            widget: "image"
+            required: false
+            hint: "Optional photo of Miss Maria or the studio. Leave blank to hide."
+
+          # "list" widget creates a repeatable set of fields.
+          # Your friend can add, remove, and reorder cards
+          # directly in the CMS without touching any code.
+          - label: "About: Value Cards"
+            name: "value_cards"
+            widget: "list"
+            hint: "The three cards on the right side of the About section (e.g. Patient & Personalized). Add, remove, or reorder freely."
+            fields:
+              - label: "Icon (emoji)"
+                name: "icon"
+                widget: "string"
+                hint: "Paste a single emoji e.g. 🌱"
+              - label: "Heading"
+                name: "heading"
+                widget: "string"
+              - label: "Description"
+                name: "description"
+                widget: "text"
+
+
+          # ── WHAT WE OFFER ─────────────────────────────────────
+          # Grid of subject cards showing what the studio teaches.
+          # ──────────────────────────────────────────────────────
+
+          - label: "Offer: Heading"
+            name: "offer_heading"
+            widget: "string"
+
+          - label: "Offer: Intro Paragraph"
+            name: "offer_intro"
+            widget: "text"
+            hint: "Sentence or two introducing the subjects offered."
+
+          - label: "Offer: Subject Cards"
+            name: "subject_cards"
+            widget: "list"
+            hint: "The subject cards in the grid (e.g. Math, Reading). Add, remove, or reorder freely."
+            fields:
+              - label: "Icon (emoji)"
+                name: "icon"
+                widget: "string"
+                hint: "Paste a single emoji e.g. 📖"
+              - label: "Subject Name"
+                name: "heading"
+                widget: "string"
+              - label: "Description"
+                name: "description"
+                widget: "text"
+
+          - label: "Offer: Services Note"
+            name: "services_note"
+            widget: "text"
+            required: false
+            hint: "Optional note shown below the subject grid — e.g. pricing or scheduling info. Leave blank to hide."
+
+
+          # ── WHO WE HELP ───────────────────────────────────────
+          # Two grade band cards: K-5 Elementary and 6-8 Middle.
+          # The grade ranges themselves (K–5, 6–8) are hardcoded
+          # in index.njk — only the descriptions are editable.
+          # ──────────────────────────────────────────────────────
+
+          - label: "Help: Heading"
+            name: "help_heading"
+            widget: "string"
+
+          - label: "Help: Intro Paragraph"
+            name: "help_intro"
+            widget: "text"
+
+          - label: "Help: Elementary School Description"
+            name: "elementary_description"
+            widget: "text"
+            hint: "Short description shown inside the K–5 card."
+
+          - label: "Help: Middle School Description"
+            name: "middle_description"
+            widget: "text"
+            hint: "Short description shown inside the 6–8 card."
+
+
+          # ── CONTACT ───────────────────────────────────────────
+          # Three contact cards: phone, email, address.
+          # Phone and email render as clickable links automatically
+          # (see index.njk — the tel: and mailto: links are built
+          # from these values).
+          # ──────────────────────────────────────────────────────
+
+          - label: "Contact: Heading"
+            name: "contact_heading"
+            widget: "string"
+
+          - label: "Contact: Intro Paragraph"
+            name: "contact_intro"
+            widget: "text"
+
+          - label: "Phone Number"
             name: "phone"
             widget: "string"
+            hint: "Format: (845) 661-8967 — used in the contact card and the tel: link."
 
-          - label: "Email"
+          - label: "Email Address"
             name: "email"
             widget: "string"
+            hint: "Used in the contact card, the mailto: link, and the footer."
 
-          # "image" widget = file upload picker, saves to media_folder above
-          - label: "Profile Photo"
-            name: "photo"
-            widget: "image"
-            required: false    # makes this field optional
+          - label: "Address"
+            name: "address"
+            widget: "string"
+            hint: "Use <br> between street and city/state for a line break e.g. 1-3 Henry W Dubois Dr<br>New Paltz, NY 12561"
+
+          - label: "Address: Google Maps Link"
+            name: "address_map_link"
+            widget: "string"
+            required: false
+            hint: "Paste a full Google Maps URL. When provided, the address card becomes a clickable link. Leave blank for plain text address."
+
+          - label: "Hours of Operation"
+            name: "hours"
+            widget: "string"
+            required: false
+            hint: "e.g. Mon–Fri 3–7pm · Sat 10am–2pm. Shown below the contact cards. Leave blank to hide."
+
+
+          # ── FOOTER ────────────────────────────────────────────
+          # The bottom bar of the page. The studio name and
+          # location are hardcoded in index.njk — only the
+          # copyright year needs updating (every January).
+          # ──────────────────────────────────────────────────────
+
+          - label: "Footer: Copyright Year"
+            name: "footer_year"
+            widget: "string"
+            hint: "Update each January. Currently: 2026."
