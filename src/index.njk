@@ -167,155 +167,150 @@
      4. Add the key as an option in config.yml section_order field
      ============================================================ #}
 
-  {# ── MACRO DEFINITIONS ──────────────────────────────────────
-     Macros must be defined before they are called.
-     Each macro wraps one full section of the page.
+  {# ── SECTION RENDER LOOP ─────────────────────────────────────
+     Loops over home.section_order and renders the matching section
+     inline. Sections are written directly (no macros) so that
+     home.* variables are always in scope.
+
+     home.section_order is an array. Each item is either:
+       - a plain string:  "about"
+       - a CMS object:    { "section": "about" }
+     Both formats are handled by checking both sectionKey and
+     sectionKey.section below.
+
+     Change the order in home.json (or via CMS) to reorder sections.
      ────────────────────────────────────────────────────────── #}
+  {% for item in home.section_order %}
+    {% if item == "about" or item.section == "about" %}
 
-  {# ABOUT macro ───────────────────────────────────────────────
-     Two-column layout: text + optional bio/photo on the left,
-     value cards (editable list) on the right.
+      {# ABOUT ─────────────────────────────────────────────────
+         Two-column layout: text + optional bio/photo on the left,
+         value cards (editable list) on the right.
 
-     EDITABLE IN CMS:
-     - about_heading, about_p1, about_p2 — main text
-     - about_bio    — optional extra paragraph (hidden if empty)
-     - about_image  — optional photo (hidden if empty)
-     - value_cards  — list of icon/heading/description cards
-  #}
-  {% macro sectionAbout() %}
-  <section class="section" id="about">
-    <div class="container">
-      <div class="section-label">About us</div>
-      <div class="about-grid">
+         EDITABLE IN CMS:
+         - about_heading, about_p1, about_p2 — main text
+         - about_bio    — optional extra paragraph (hidden if empty)
+         - about_image  — optional photo (hidden if empty)
+         - value_cards  — list of icon/heading/description cards
+      #}
+      <section class="section" id="about">
+        <div class="container">
+          <div class="section-label">About us</div>
+          <div class="about-grid">
 
-        <div class="about-text">
-          <h2>{{ home.about_heading }}</h2>
-          <p>{{ home.about_p1 }}</p>
-          <p>{{ home.about_p2 }}</p>
+            <div class="about-text">
+              <h2>{{ home.about_heading }}</h2>
+              <p>{{ home.about_p1 }}</p>
+              <p>{{ home.about_p2 }}</p>
 
-          {# Bio paragraph — only rendered if not empty in home.json #}
-          {% if home.about_bio %}
-            <p>{{ home.about_bio }}</p>
-          {% endif %}
+              {# Bio paragraph — only rendered if not empty in home.json #}
+              {% if home.about_bio %}
+                <p>{{ home.about_bio }}</p>
+              {% endif %}
 
-          {# Photo — only rendered if an image was uploaded in CMS #}
-          {% if home.about_image %}
-            <img src="{{ home.about_image }}" alt="Miss Maria" class="about-photo">
-          {% endif %}
+              {# Photo — only rendered if an image was uploaded in CMS #}
+              {% if home.about_image %}
+                <img src="{{ home.about_image }}" alt="Miss Maria" class="about-photo">
+              {% endif %}
+            </div>
+
+            {# Value cards — loops over the home.value_cards array.
+               Each card has: icon (emoji), heading, description.
+               Cards can be added, removed, reordered in the CMS. #}
+            <div class="about-values">
+              {% for card in home.value_cards %}
+                <div class="value-card">
+                  <div class="value-icon">{{ card.icon }}</div>
+                  <div>
+                    <h3>{{ card.heading }}</h3>
+                    <p>{{ card.description }}</p>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+          </div>
         </div>
+      </section>
 
-        {# Value cards — loops over the home.value_cards array.
-           Each card has: icon (emoji), heading, description.
-           Cards can be added, removed, reordered in the CMS. #}
-        <div class="about-values">
-          {% for card in home.value_cards %}
-            <div class="value-card">
-              <div class="value-icon">{{ card.icon }}</div>
-              <div>
+    {% elif item == "offer" or item.section == "offer" %}
+
+      {# WHAT WE OFFER ──────────────────────────────────────────
+         Grid of subject cards — fully editable list in CMS.
+         section-warm applies the light orange background.
+
+         EDITABLE IN CMS:
+         - offer_heading, offer_intro — section heading and intro text
+         - subject_cards — list of icon/heading/description cards
+         - services_note — optional note below grid (hidden if empty)
+      #}
+      <section class="section section-warm" id="what-we-offer">
+        <div class="container">
+          <div class="section-label">What we offer</div>
+          <h2>{{ home.offer_heading }}</h2>
+          <p class="section-intro">{{ home.offer_intro }}</p>
+
+          {# Subject cards grid — loops over home.subject_cards array.
+             Each card has: icon (emoji), heading, description.
+             The grid layout adjusts automatically as cards are added. #}
+          <div class="subjects-grid">
+            {% for card in home.subject_cards %}
+              <div class="subject-card">
+                <div class="subject-icon">{{ card.icon }}</div>
                 <h3>{{ card.heading }}</h3>
                 <p>{{ card.description }}</p>
               </div>
-            </div>
-          {% endfor %}
-        </div>
-
-      </div>
-    </div>
-  </section>
-  {% endmacro %}
-
-
-  {# WHAT WE OFFER macro ────────────────────────────────────────
-     Grid of subject cards — fully editable list in CMS.
-     section-warm applies the light orange background.
-
-     EDITABLE IN CMS:
-     - offer_heading, offer_intro — section heading and intro text
-     - subject_cards — list of icon/heading/description cards
-     - services_note — optional note below grid (hidden if empty)
-  #}
-  {% macro sectionOffer() %}
-  <section class="section section-warm" id="what-we-offer">
-    <div class="container">
-      <div class="section-label">What we offer</div>
-      <h2>{{ home.offer_heading }}</h2>
-      <p class="section-intro">{{ home.offer_intro }}</p>
-
-      {# Subject cards grid — loops over home.subject_cards array.
-         Each card has: icon (emoji), heading, description.
-         The grid layout adjusts automatically as cards are added. #}
-      <div class="subjects-grid">
-        {% for card in home.subject_cards %}
-          <div class="subject-card">
-            <div class="subject-icon">{{ card.icon }}</div>
-            <h3>{{ card.heading }}</h3>
-            <p>{{ card.description }}</p>
+            {% endfor %}
           </div>
-        {% endfor %}
-      </div>
 
-      {# Optional note below the grid — e.g. pricing or scheduling info.
-         Only rendered if services_note is not empty in home.json. #}
-      {% if home.services_note %}
-        <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.services_note }}</p>
-      {% endif %}
-    </div>
-  </section>
-  {% endmacro %}
-
-
-  {# WHO WE HELP macro ──────────────────────────────────────────
-     Two grade band cards side by side: K-5 and 6-8.
-     The grade ranges are hardcoded; descriptions are editable.
-
-     HARDCODED:
-     - "K – 5" and "6 – 8" grade ranges
-     - "Elementary School" and "Middle School" labels
-
-     EDITABLE IN CMS:
-     - help_heading, help_intro — section heading and intro
-     - elementary_description — text inside the K–5 card
-     - middle_description     — text inside the 6–8 card
-  #}
-  {% macro sectionHelp() %}
-  <section class="section" id="who-we-help">
-    <div class="container">
-      <div class="section-label">Who we help</div>
-      <h2>{{ home.help_heading }}</h2>
-      <p class="section-intro">{{ home.help_intro }}</p>
-
-      <div class="grades-row">
-        <div class="grade-band">
-          <div class="grade-range">K – 5</div>
-          <div class="grade-label">Elementary School</div>
-          <p>{{ home.elementary_description }}</p>
+          {# Optional note below the grid — e.g. pricing or scheduling info.
+             Only rendered if services_note is not empty in home.json. #}
+          {% if home.services_note %}
+            <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.services_note }}</p>
+          {% endif %}
         </div>
+      </section>
 
-        {# The + divider is decorative — hidden on mobile via CSS #}
-        <div class="grade-divider" aria-hidden="true">+</div>
+    {% elif item == "help" or item.section == "help" %}
 
-        <div class="grade-band">
-          <div class="grade-range">6 – 8</div>
-          <div class="grade-label">Middle School</div>
-          <p>{{ home.middle_description }}</p>
+      {# WHO WE HELP ────────────────────────────────────────────
+         Two grade band cards side by side: K-5 and 6-8.
+         The grade ranges are hardcoded; descriptions are editable.
+
+         HARDCODED:
+         - "K – 5" and "6 – 8" grade ranges
+         - "Elementary School" and "Middle School" labels
+
+         EDITABLE IN CMS:
+         - help_heading, help_intro — section heading and intro
+         - elementary_description — text inside the K–5 card
+         - middle_description     — text inside the 6–8 card
+      #}
+      <section class="section" id="who-we-help">
+        <div class="container">
+          <div class="section-label">Who we help</div>
+          <h2>{{ home.help_heading }}</h2>
+          <p class="section-intro">{{ home.help_intro }}</p>
+
+          <div class="grades-row">
+            <div class="grade-band">
+              <div class="grade-range">K – 5</div>
+              <div class="grade-label">Elementary School</div>
+              <p>{{ home.elementary_description }}</p>
+            </div>
+
+            {# The + divider is decorative — hidden on mobile via CSS #}
+            <div class="grade-divider" aria-hidden="true">+</div>
+
+            <div class="grade-band">
+              <div class="grade-range">6 – 8</div>
+              <div class="grade-label">Middle School</div>
+              <p>{{ home.middle_description }}</p>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
-  {% endmacro %}
+      </section>
 
-
-  {# ── SECTION RENDER LOOP ─────────────────────────────────────
-     Loops over home.section_order and calls the matching macro.
-     Change the order in home.json (or via CMS) to reorder sections.
-     ────────────────────────────────────────────────────────── #}
-  {% for sectionKey in home.section_order %}
-    {% if sectionKey == "about" %}
-      {{ sectionAbout() }}
-    {% elif sectionKey == "offer" %}
-      {{ sectionOffer() }}
-    {% elif sectionKey == "help" %}
-      {{ sectionHelp() }}
     {% endif %}
   {% endfor %}
 
