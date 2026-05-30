@@ -18,6 +18,7 @@
 # - text    = multi-line text area (no formatting)
 # - image   = file upload picker (saves to media_folder)
 # - list    = repeatable group of fields (cards, items)
+# - select  = dropdown with fixed options
 #
 # TO ADD A NEW FIELD:
 # 1. Add the field here under the right section
@@ -38,10 +39,9 @@ backend:
   branch: main                           # edits commit to this branch
 
   # The Cloudflare Worker that handles GitHub OAuth login.
-  # This is the worker you deployed in Phase 4 — it lets
-  # your friend log in with "Login with GitHub" instead of
+  # This is the worker deployed in Phase 4 — it lets your
+  # friend log in with "Login with GitHub" instead of
   # managing personal access tokens.
-  # Replace this with your actual worker URL.
   base_url: https://sveltia-cms-auth.maria-b19.workers.dev
 
 
@@ -66,7 +66,7 @@ public_folder: "/images/uploads"
 # one-page site where every section is always present.
 # ============================================================
 collections:
-  - name: "pages"       # internal ID used by Sveltia
+  - name: "pages"         # internal ID used by Sveltia
     label: "Site Content" # what appears in the CMS sidebar
     files:
 
@@ -79,6 +79,32 @@ collections:
         label: "Home Page"
         file: "src/_data/home.json"
         fields:
+
+
+          # ── SECTION ORDER ──────────────────────────────────────
+          # Controls the order of the three middle sections on the
+          # page (About, What We Offer, Who We Help).
+          # Hero and Footer are always fixed at top and bottom.
+          #
+          # "list" widget with select fields lets your friend
+          # reorder sections by changing the values in each slot.
+          # The values here (about, offer, help) must match the
+          # keys used in the {% if sectionKey === "..." %} checks
+          # in index.njk — do not change them without updating
+          # index.njk as well.
+          # ──────────────────────────────────────────────────────
+          - label: "Page Section Order"
+            name: "section_order"
+            widget: "list"
+            hint: "Controls the order of the three main sections. Each slot must have a unique value. Options: about, offer, help."
+            fields:
+              - label: "Section"
+                name: "section"
+                widget: "select"
+                options:
+                  - { label: "About Us", value: "about" }
+                  - { label: "What We Offer", value: "offer" }
+                  - { label: "Who We Help", value: "help" }
 
 
           # ── SEO ───────────────────────────────────────────────
