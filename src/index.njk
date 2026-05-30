@@ -1,135 +1,59 @@
 <!DOCTYPE html>
 <!--
-  ============================================================
   PAPPACE PLACE LEARNING STUDIO — index.njk
   pappaceplace.com
 
-  WHAT THIS FILE IS:
-  A Nunjucks template processed by Eleventy at build time.
-  Nunjucks syntax like {{ home.hero_tagline }} gets replaced
-  with real content from src/_data/home.json before the page
-  is sent to visitors. The output is plain HTML in _site/.
-
-  DO NOT edit text content directly in this file.
-  Use the CMS at /admin/ instead — changes made there
-  update home.json, which flows through here automatically.
-
-  HOW VARIABLES WORK:
-  {{ home.key }}         — outputs a value from home.json
-  {% if home.key %}      — only renders if the value is not empty
-  {% for x in home.list %} — loops over an array in home.json
-
-  HOW SECTION ORDER WORKS:
-  The middle sections (about, offer, help) are rendered in the
-  order defined by home.section_order in home.json.
-  The CMS exposes this as a reorderable list field.
-  Hero and Footer are always fixed at top and bottom.
-
-  FONTS USED:
-  Fraunces  — serif, used for headings (loaded from Google Fonts)
-  Plus Jakarta Sans — sans-serif, used for body text
-  ============================================================
+  Nunjucks template processed by Eleventy.
+  DO NOT edit text content here — use /admin instead.
+  All content variables come from src/_data/home.json via Sveltia CMS.
 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  {# Page title and meta description come from home.json — editable in CMS #}
   <title>{{ home.meta_title }}</title>
   <meta name="description" content="{{ home.meta_description }}">
-
-  {# Google Fonts — preconnect speeds up font loading slightly #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
-
-  {# Main stylesheet — all styles live in style.css #}
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-
-  {# ============================================================
-     NAV — sticky top bar, always visible while scrolling.
-
-     The wordmark (Pappace Place / Learning Studio) links back
-     to the top of the page. The nav links are anchor links
-     that jump to sections by their id= attribute.
-
-     On mobile, the links are hidden and toggled by the ☰
-     hamburger button — see the JavaScript at the bottom.
-     The section names here should match the section-label
-     text inside each section below.
-     ============================================================ #}
+  <!-- NAV -->
   <nav>
     <div class="nav-inner">
-
-      {# Brand name — clicking returns to top of page #}
       <a href="/" class="wordmark">
         <span class="wordmark-main">Pappace Place</span>
         <span class="wordmark-sub">Learning Studio</span>
       </a>
-
-      {# Desktop nav links — href values must match the id= on each section #}
       <div class="nav-links">
         <a href="#about">About</a>
         <a href="#what-we-offer">What We Offer</a>
         <a href="#who-we-help">Who We Help</a>
         <a href="#contact">Contact</a>
       </div>
-
-      {# Hamburger button — only visible on mobile (see CSS .nav-toggle) #}
       <button class="nav-toggle" aria-label="Menu">☰</button>
-
     </div>
   </nav>
 
 
-  {# ============================================================
-     HERO — the first section visitors see.
-
-     HARDCODED (not editable in CMS):
-     - "New Paltz, NY" eyebrow badge
-     - "Every student can thrive." heading
-     - "Get in touch →" and "Learn more" buttons
-
-     EDITABLE IN CMS:
-     - hero_tagline — the sentence under the heading
-     - hero_image   — optional image; if set it replaces the
-                      animated blob graphic on the right side
-
-     The blob graphic is purely decorative — it animates
-     between organic shapes using CSS keyframes (see style.css).
-     The three floating cards (Elementary, Middle School, All
-     Subjects) also animate in CSS.
-     ============================================================ #}
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
-
       <div class="hero-text">
-        {# Small orange pill badge — location label #}
         <div class="hero-eyebrow">New Paltz, NY</div>
-
-        {# Main headline — hardcoded, <em> makes "thrive." italic and orange #}
         <h1>Every student<br>can <em>thrive.</em></h1>
-
-        {# Tagline — editable in CMS via home.hero_tagline #}
         <p class="hero-sub">{{ home.hero_tagline }}</p>
-
         <div class="hero-cta">
           <a href="#contact" class="btn">Get in touch →</a>
           <a href="#what-we-offer" class="btn-ghost">Learn more</a>
         </div>
       </div>
 
-      {# Right column graphic — aria-hidden hides it from screen readers
-         since it's decorative only #}
       <div class="hero-graphic" aria-hidden="true">
         {% if home.hero_image %}
-          {# If an image was uploaded in the CMS, show it instead of the blob #}
           <img src="{{ home.hero_image }}" alt="" class="hero-img">
         {% else %}
-          {# Default: animated blob with floating subject cards #}
           <div class="blob">
             <div class="blob-inner">
               <span class="blob-icon">📚</span>
@@ -141,197 +65,94 @@
           <div class="floating-card fc3"><span>⭐</span> All Subjects</div>
         {% endif %}
       </div>
-
     </div>
   </section>
 
 
-  {# ============================================================
-     SECTION ORDER — renders About, What We Offer, and Who We
-     Help in the order defined by home.section_order in home.json.
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-label">About us</div>
+      <div class="about-grid">
 
-     home.section_order is an array of section keys, e.g.:
-       ["about", "offer", "help"]
-
-     The CMS exposes this as a drag-to-reorder list so the order
-     can be changed without touching this file.
-
-     Each section key maps to a Nunjucks {% macro %} defined
-     below. Macros are like reusable HTML functions — calling
-     {{ sectionAbout() }} renders the entire About section.
-
-     TO ADD A NEW REORDERABLE SECTION:
-     1. Define a new macro below following the same pattern
-     2. Add its key to the section_order array in home.json
-     3. Add an {% elif %} case in the loop below
-     4. Add the key as an option in config.yml section_order field
-     ============================================================ #}
-
-  {# ── SECTION RENDER LOOP ─────────────────────────────────────
-     Loops over home.section_order and renders the matching section
-     inline. Sections are written directly (no macros) so that
-     home.* variables are always in scope.
-
-     home.section_order is an array. Each item is either:
-       - a plain string:  "about"
-       - a CMS object:    { "section": "about" }
-     Both formats are handled by checking both sectionKey and
-     sectionKey.section below.
-
-     Change the order in home.json (or via CMS) to reorder sections.
-     ────────────────────────────────────────────────────────── #}
-  {% for item in home.section_order %}
-    {% if item == "about" or item.section == "about" %}
-
-      {# ABOUT ─────────────────────────────────────────────────
-         Two-column layout: text + optional bio/photo on the left,
-         value cards (editable list) on the right.
-
-         EDITABLE IN CMS:
-         - about_heading, about_p1, about_p2 — main text
-         - about_bio    — optional extra paragraph (hidden if empty)
-         - about_image  — optional photo (hidden if empty)
-         - value_cards  — list of icon/heading/description cards
-      #}
-      <section class="section" id="about">
-        <div class="container">
-          <div class="section-label">About us</div>
-          <div class="about-grid">
-
-            <div class="about-text">
-              <h2>{{ home.about_heading }}</h2>
-              <p>{{ home.about_p1 }}</p>
-              <p>{{ home.about_p2 }}</p>
-
-              {# Bio paragraph — only rendered if not empty in home.json #}
-              {% if home.about_bio %}
-                <p>{{ home.about_bio }}</p>
-              {% endif %}
-
-              {# Photo — only rendered if an image was uploaded in CMS #}
-              {% if home.about_image %}
-                <img src="{{ home.about_image }}" alt="Miss Maria" class="about-photo">
-              {% endif %}
-            </div>
-
-            {# Value cards — loops over the home.value_cards array.
-               Each card has: icon (emoji), heading, description.
-               Cards can be added, removed, reordered in the CMS. #}
-            <div class="about-values">
-              {% for card in home.value_cards %}
-                <div class="value-card">
-                  <div class="value-icon">{{ card.icon }}</div>
-                  <div>
-                    <h3>{{ card.heading }}</h3>
-                    <p>{{ card.description }}</p>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-
-          </div>
+        <div class="about-text">
+          <h2>{{ home.about_heading }}</h2>
+          <p>{{ home.about_p1 }}</p>
+          <p>{{ home.about_p2 }}</p>
+          {% if home.about_bio %}
+            <p>{{ home.about_bio }}</p>
+          {% endif %}
+          {% if home.about_image %}
+            <img src="{{ home.about_image }}" alt="Miss Maria" class="about-photo">
+          {% endif %}
         </div>
-      </section>
 
-    {% elif item == "offer" or item.section == "offer" %}
-
-      {# WHAT WE OFFER ──────────────────────────────────────────
-         Grid of subject cards — fully editable list in CMS.
-         section-warm applies the light orange background.
-
-         EDITABLE IN CMS:
-         - offer_heading, offer_intro — section heading and intro text
-         - subject_cards — list of icon/heading/description cards
-         - services_note — optional note below grid (hidden if empty)
-      #}
-      <section class="section section-warm" id="what-we-offer">
-        <div class="container">
-          <div class="section-label">What we offer</div>
-          <h2>{{ home.offer_heading }}</h2>
-          <p class="section-intro">{{ home.offer_intro }}</p>
-
-          {# Subject cards grid — loops over home.subject_cards array.
-             Each card has: icon (emoji), heading, description.
-             The grid layout adjusts automatically as cards are added. #}
-          <div class="subjects-grid">
-            {% for card in home.subject_cards %}
-              <div class="subject-card">
-                <div class="subject-icon">{{ card.icon }}</div>
+        <div class="about-values">
+          {% for card in home.value_cards %}
+            <div class="value-card">
+              <div class="value-icon">{{ card.icon }}</div>
+              <div>
                 <h3>{{ card.heading }}</h3>
                 <p>{{ card.description }}</p>
               </div>
-            {% endfor %}
-          </div>
-
-          {# Optional note below the grid — e.g. pricing or scheduling info.
-             Only rendered if services_note is not empty in home.json. #}
-          {% if home.services_note %}
-            <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.services_note }}</p>
-          {% endif %}
-        </div>
-      </section>
-
-    {% elif item == "help" or item.section == "help" %}
-
-      {# WHO WE HELP ────────────────────────────────────────────
-         Two grade band cards side by side: K-5 and 6-8.
-         The grade ranges are hardcoded; descriptions are editable.
-
-         HARDCODED:
-         - "K – 5" and "6 – 8" grade ranges
-         - "Elementary School" and "Middle School" labels
-
-         EDITABLE IN CMS:
-         - help_heading, help_intro — section heading and intro
-         - elementary_description — text inside the K–5 card
-         - middle_description     — text inside the 6–8 card
-      #}
-      <section class="section" id="who-we-help">
-        <div class="container">
-          <div class="section-label">Who we help</div>
-          <h2>{{ home.help_heading }}</h2>
-          <p class="section-intro">{{ home.help_intro }}</p>
-
-          <div class="grades-row">
-            <div class="grade-band">
-              <div class="grade-range">K – 5</div>
-              <div class="grade-label">Elementary School</div>
-              <p>{{ home.elementary_description }}</p>
             </div>
-
-            {# The + divider is decorative — hidden on mobile via CSS #}
-            <div class="grade-divider" aria-hidden="true">+</div>
-
-            <div class="grade-band">
-              <div class="grade-range">6 – 8</div>
-              <div class="grade-label">Middle School</div>
-              <p>{{ home.middle_description }}</p>
-            </div>
-          </div>
+          {% endfor %}
         </div>
-      </section>
 
-    {% endif %}
-  {% endfor %}
+      </div>
+    </div>
+  </section>
 
 
-  {# ============================================================
-     CONTACT — always last before the footer, not reorderable.
+  <!-- WHAT WE OFFER -->
+  <section class="section section-warm" id="what-we-offer">
+    <div class="container">
+      <div class="section-label">What we offer</div>
+      <h2>{{ home.offer_heading }}</h2>
+      <p class="section-intro">{{ home.offer_intro }}</p>
 
-     The phone number is stripped of formatting for the tel: link
-     using Nunjucks replace filters, e.g.:
-       (845) 661-8967  →  tel:8456618967
+      <div class="subjects-grid">
+        {% for card in home.subject_cards %}
+          <div class="subject-card">
+            <div class="subject-icon">{{ card.icon }}</div>
+            <h3>{{ card.heading }}</h3>
+            <p>{{ card.description }}</p>
+          </div>
+        {% endfor %}
+      </div>
 
-     The address card conditionally renders as a clickable <a>
-     link (if address_map_link is set) or a plain <div> (if not).
-     The | safe filter allows the <br> in the address to render
-     as an actual line break rather than literal text.
+      {% if home.services_note %}
+        <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.services_note }}</p>
+      {% endif %}
+    </div>
+  </section>
 
-     EDITABLE IN CMS:
-     - contact_heading, contact_intro
-     - phone, email, address, address_map_link
-     - hours — optional line below cards (hidden if empty)
-     ============================================================ #}
+
+  <!-- WHO WE HELP -->
+  <section class="section" id="who-we-help">
+    <div class="container">
+      <div class="section-label">Who we help</div>
+      <h2>{{ home.help_heading }}</h2>
+      <p class="section-intro">{{ home.help_intro }}</p>
+
+      <div class="grades-row">
+        <div class="grade-band">
+          <div class="grade-range">K – 5</div>
+          <div class="grade-label">Elementary School</div>
+          <p>{{ home.elementary_description }}</p>
+        </div>
+        <div class="grade-divider" aria-hidden="true">+</div>
+        <div class="grade-band">
+          <div class="grade-range">6 – 8</div>
+          <div class="grade-label">Middle School</div>
+          <p>{{ home.middle_description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CONTACT -->
   <section class="section section-contact" id="contact">
     <div class="container">
       <div class="section-label">Get in touch</div>
@@ -339,23 +160,16 @@
       <p class="section-intro">{{ home.contact_intro }}</p>
 
       <div class="contact-cards">
-
-        {# Phone card — strips formatting to build a clean tel: link #}
         <a href="tel:{{ home.phone | replace('(', '') | replace(')', '') | replace(' ', '') | replace('-', '') }}" class="contact-card">
           <div class="contact-card-icon">📞</div>
           <div class="contact-card-label">Call or text</div>
           <div class="contact-card-value">{{ home.phone }}</div>
         </a>
-
-        {# Email card — straightforward mailto: link #}
         <a href="mailto:{{ home.email }}" class="contact-card">
           <div class="contact-card-icon">✉️</div>
           <div class="contact-card-label">Email</div>
           <div class="contact-card-value">{{ home.email }}</div>
         </a>
-
-        {# Address card — renders as <a> if map link exists, <div> if not.
-           The opening tag changes but the inner content stays the same. #}
         {% if home.address_map_link %}
           <a href="{{ home.address_map_link }}" target="_blank" rel="noopener" class="contact-card">
         {% else %}
@@ -363,67 +177,40 @@
         {% endif %}
           <div class="contact-card-icon">📍</div>
           <div class="contact-card-label">Location</div>
-          {# | safe allows the <br> in the address string to render as HTML #}
           <div class="contact-card-value">{{ home.address | safe }}</div>
         {% if home.address_map_link %}
           </a>
         {% else %}
           </div>
         {% endif %}
-
       </div>
 
-      {# Optional hours line — only shown if hours is not empty in home.json #}
       {% if home.hours %}
         <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.hours }}</p>
       {% endif %}
-
     </div>
   </section>
 
 
-  {# ============================================================
-     FOOTER — always fixed at the bottom.
-     Studio name and location are hardcoded.
-     Copyright year and email come from home.json.
-     ============================================================ #}
+  <!-- FOOTER -->
   <footer>
     <div class="container footer-inner">
       <span class="footer-name">Pappace Place Learning Studio</span>
       <span class="footer-copy">© {{ home.footer_year }} · New Paltz, NY</span>
-      {# Email links to mailto — reuses the same email as the contact section #}
       <a href="mailto:{{ home.email }}" class="footer-email">{{ home.email }}</a>
     </div>
   </footer>
 
 
+  <!-- JAVASCRIPT — unchanged -->
   <script>
-    // ============================================================
-    // MOBILE NAV TOGGLE
-    // The hamburger ☰ button toggles the .open class on .nav-links.
-    // CSS shows/hides the links based on whether .open is present.
-    // Clicking any nav link also closes the menu.
-    // ============================================================
     const toggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
-
-    // Toggle menu open/closed on hamburger click
     toggle.addEventListener('click', () => navLinks.classList.toggle('open'));
-
-    // Close menu when any nav link is clicked
     navLinks.querySelectorAll('a').forEach(l => {
       l.addEventListener('click', () => navLinks.classList.remove('open'));
     });
 
-
-    // ============================================================
-    // SMOOTH SCROLL
-    // Intercepts clicks on any anchor link (href starting with #)
-    // and smoothly scrolls to the target section instead of
-    // jumping instantly. scrollIntoView is supported in all
-    // modern browsers. The CSS also has scroll-behavior: smooth
-    // as a fallback for links not caught by this script.
-    // ============================================================
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const target = document.querySelector(a.getAttribute('href'));
@@ -434,37 +221,20 @@
       });
     });
 
-
-    // ============================================================
-    // FADE-IN ON SCROLL (Intersection Observer)
-    // Cards start invisible (opacity: 0, shifted down 16px — see
-    // .fade-target in style.css). This observer watches for them
-    // to enter the viewport and adds .visible, triggering the
-    // CSS transition that fades and slides them into place.
-    //
-    // threshold: 0.1 means the animation fires when 10% of the
-    // element is visible. observer.unobserve() stops watching
-    // after the first trigger so it only animates once.
-    //
-    // TO MAKE A NEW ELEMENT FADE IN: add class="fade-target" to
-    // it in the HTML above — no JS changes needed.
-    // ============================================================
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           e.target.classList.add('visible');
-          observer.unobserve(e.target); // animate once, then stop watching
+          observer.unobserve(e.target);
         }
       });
     }, { threshold: 0.1 });
 
-    // Attach the observer to all card-type elements
     document.querySelectorAll('.value-card, .subject-card, .grade-band, .contact-card').forEach(el => {
       el.classList.add('fade-target');
       observer.observe(el);
     });
   </script>
-
 
 </body>
 </html>
