@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--
+  PAPPACE PLACE LEARNING STUDIO — index.njk
+  pappaceplace.com
+
+  Nunjucks template processed by Eleventy.
+  DO NOT edit text content here — use /admin instead.
+  All content variables come from src/_data/home.json via Sveltia CMS.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ home.meta_title }}</title>
+  <meta name="description" content="{{ home.meta_description }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="wordmark">
+        <span class="wordmark-main">Pappace Place</span>
+        <span class="wordmark-sub">Learning Studio</span>
+      </a>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#what-we-offer">What We Offer</a>
+        <a href="#who-we-help">Who We Help</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+    </div>
+  </nav>
+
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow">New Paltz, NY</div>
+        <h1>Every student<br>can <em>thrive.</em></h1>
+        <p class="hero-sub">{{ home.hero_tagline }}</p>
+        <div class="hero-cta">
+          <a href="#contact" class="btn">Get in touch →</a>
+          <a href="#what-we-offer" class="btn-ghost">Learn more</a>
+        </div>
+      </div>
+
+      <div class="hero-graphic" aria-hidden="true">
+        {% if home.hero_image %}
+          <img src="{{ home.hero_image }}" alt="" class="hero-img">
+        {% else %}
+          <div class="blob">
+            <div class="blob-inner">
+              <span class="blob-icon">📚</span>
+              <span class="blob-label">Learning made fun</span>
+            </div>
+          </div>
+          <div class="floating-card fc1"><span>✏️</span> Elementary</div>
+          <div class="floating-card fc2"><span>🔬</span> Middle School</div>
+          <div class="floating-card fc3"><span>⭐</span> All Subjects</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-label">About us</div>
+      <div class="about-grid">
+
+        <div class="about-text">
+          <h2>{{ home.about_heading }}</h2>
+          <p>{{ home.about_p1 }}</p>
+          <p>{{ home.about_p2 }}</p>
+          {% if home.about_bio %}
+            <p>{{ home.about_bio }}</p>
+          {% endif %}
+          {% if home.about_image %}
+            <img src="{{ home.about_image }}" alt="Miss Maria" class="about-photo">
+          {% endif %}
+        </div>
+
+        <div class="about-values">
+          {% for card in home.value_cards %}
+            <div class="value-card">
+              <div class="value-icon">{{ card.icon }}</div>
+              <div>
+                <h3>{{ card.heading }}</h3>
+                <p>{{ card.description }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- WHAT WE OFFER -->
+  <section class="section section-warm" id="what-we-offer">
+    <div class="container">
+      <div class="section-label">What we offer</div>
+      <h2>{{ home.offer_heading }}</h2>
+      <p class="section-intro">{{ home.offer_intro }}</p>
+
+      <div class="subjects-grid">
+        {% for card in home.subject_cards %}
+          <div class="subject-card">
+            <div class="subject-icon">{{ card.icon }}</div>
+            <h3>{{ card.heading }}</h3>
+            <p>{{ card.description }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if home.services_note %}
+        <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.services_note }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+
+  <!-- WHO WE HELP -->
+  <section class="section" id="who-we-help">
+    <div class="container">
+      <div class="section-label">Who we help</div>
+      <h2>{{ home.help_heading }}</h2>
+      <p class="section-intro">{{ home.help_intro }}</p>
+
+      <div class="grades-row">
+        <div class="grade-band">
+          <div class="grade-range">K – 5</div>
+          <div class="grade-label">Elementary School</div>
+          <p>{{ home.elementary_description }}</p>
+        </div>
+        <div class="grade-divider" aria-hidden="true">+</div>
+        <div class="grade-band">
+          <div class="grade-range">6 – 8</div>
+          <div class="grade-label">Middle School</div>
+          <p>{{ home.middle_description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CONTACT -->
+  <section class="section section-contact" id="contact">
+    <div class="container">
+      <div class="section-label">Get in touch</div>
+      <h2>{{ home.contact_heading }}</h2>
+      <p class="section-intro">{{ home.contact_intro }}</p>
+
+      <div class="contact-cards">
+        <a href="tel:{{ home.phone | replace('(', '') | replace(')', '') | replace(' ', '') | replace('-', '') }}" class="contact-card">
+          <div class="contact-card-icon">📞</div>
+          <div class="contact-card-label">Call or text</div>
+          <div class="contact-card-value">{{ home.phone }}</div>
+        </a>
+        <a href="mailto:{{ home.email }}" class="contact-card">
+          <div class="contact-card-icon">✉️</div>
+          <div class="contact-card-label">Email</div>
+          <div class="contact-card-value">{{ home.email }}</div>
+        </a>
+        {% if home.address_map_link %}
+          <a href="{{ home.address_map_link }}" target="_blank" rel="noopener" class="contact-card">
+        {% else %}
+          <div class="contact-card">
+        {% endif %}
+          <div class="contact-card-icon">📍</div>
+          <div class="contact-card-label">Location</div>
+          <div class="contact-card-value">{{ home.address | safe }}</div>
+        {% if home.address_map_link %}
+          </a>
+        {% else %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% if home.hours %}
+        <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.hours }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <span class="footer-name">Pappace Place Learning Studio</span>
+      <span class="footer-copy">© {{ home.footer_year }} · New Paltz, NY</span>
+      <a href="mailto:{{ home.email }}" class="footer-email">{{ home.email }}</a>
+    </div>
+  </footer>
+
+
+  <!-- JAVASCRIPT — unchanged -->
+  <script>
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    toggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(l => {
+      l.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.value-card, .subject-card, .grade-band, .contact-card').forEach(el => {
+      el.classList.add('fade-target');
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>

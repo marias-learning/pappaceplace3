@@ -1,0 +1,490 @@
+/* ============================================================
+   PAPPACE PLACE LEARNING STUDIO — style.css
+   pappaceplace.com
+
+   HOW THIS FILE IS ORGANIZED:
+   1.  Reset & Base        — clears browser defaults, sets body font/color
+   2.  Design Tokens       — all colors, fonts, sizes in one place (edit here!)
+   3.  Typography          — heading and paragraph sizes
+   4.  Nav                 — sticky top navigation bar
+   5.  Hero                — big intro section with heading and floating cards
+   6.  Sections            — shared styles for every content section
+   7.  About               — two-column layout with value cards
+   8.  Subjects            — four-column subject card grid
+   9.  Grades              — K-5 and 6-8 grade band display
+   10. Contact             — three contact info cards
+   11. Footer              — bottom bar
+   12. Animations          — floating cards, blob shape, fade-in on scroll
+   13. Responsive          — mobile/tablet layout adjustments
+
+   TO CHANGE A COLOR: edit the value in :root {} below.
+   TO CHANGE A FONT SIZE: find the element and edit font-size.
+   TO CHANGE SPACING: padding and margin values control whitespace.
+   ============================================================ */
+
+
+/* ============================================================
+   1. RESET & BASE
+   Removes default browser margins/padding so everything starts
+   from zero. box-sizing: border-box means padding is included
+   inside element widths — much easier to work with.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+/* ============================================================
+   2. DESIGN TOKENS (CSS Variables)
+   Single source of truth for the whole site's look and feel.
+   Change a value here and it updates everywhere it's used.
+
+   COLORS:
+   --orange       = main brand color (buttons, accents, headings)
+   --orange-light = lighter orange for hover states
+   --orange-pale  = very light orange for badge/pill backgrounds
+   --orange-warm  = warm cream for alternating section backgrounds
+   --yellow       = unused accent, available if needed
+   --ink          = main text color (near black, warm tone)
+   --ink-muted    = secondary text (paragraphs, descriptions)
+   --ink-faint    = subtle text (labels, small print)
+   --paper        = page background (warm near-white)
+   --paper-card   = pure white for card backgrounds
+   --rule         = light border/divider color
+
+   FONTS:
+   --serif = Fraunces — elegant serif used for headings
+   --sans  = Plus Jakarta Sans — clean sans-serif for body text
+
+   SIZES:
+   --radius    = corner rounding on cards (12px = noticeably rounded)
+   --radius-sm = smaller rounding for inner elements (8px)
+   --max       = maximum content width (1100px)
+   ============================================================ */
+:root {
+  --orange:        #E8621A;
+  --orange-light:  #F47C3C;
+  --orange-pale:   #FEF0E7;
+  --orange-warm:   #FDF5EE;
+  --yellow:        #F9C74F;
+  --ink:           #1E1A16;
+  --ink-muted:     #5C5248;
+  --ink-faint:     #A09488;
+  --paper:         #FFFCF9;
+  --paper-card:    #FFFFFF;
+  --rule:          rgba(0,0,0,0.08);
+  --serif:         'Fraunces', Georgia, serif;
+  --sans:          'Plus Jakarta Sans', sans-serif;
+  --radius:        12px;
+  --radius-sm:     8px;
+  --max:           1100px;
+}
+
+/* Enables smooth scrolling when clicking anchor links like #contact */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;       /* base size — rem units scale from this */
+  line-height: 1.6;      /* comfortable line spacing for reading */
+  -webkit-font-smoothing: antialiased; /* crisper text on Mac/iOS */
+}
+
+
+/* ============================================================
+   3. TYPOGRAPHY
+   Headings use the Fraunces serif font for warmth and character.
+   clamp(min, preferred, max) scales font sizes fluidly with
+   screen width — large on desktop, smaller on mobile.
+   ============================================================ */
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  font-weight: 300; line-height: 1.1; letter-spacing: -0.02em;
+}
+/* <em> inside h1 makes italic text in the brand orange color */
+h1 em { font-style: italic; color: var(--orange); }
+
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 300; line-height: 1.2; letter-spacing: -0.01em;
+}
+h3 { font-size: 1rem; font-weight: 500; }
+p  { color: var(--ink-muted); line-height: 1.7; }
+a  { color: inherit; text-decoration: none; }
+
+
+/* ============================================================
+   4. NAV — sticky top navigation bar
+   position: sticky keeps it fixed at the top as you scroll.
+   z-index: 100 keeps it above all other page content.
+   backdrop-filter adds a frosted-glass effect behind the bar.
+   ============================================================ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,252,249,0.92); /* slightly transparent so page shows through */
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: blur(10px);
+}
+
+/* Centers content and controls the nav bar height */
+.nav-inner {
+  max-width: var(--max); margin: 0 auto;
+  padding: 0 32px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Two-line brand name: "Pappace Place" + "Learning Studio" */
+.wordmark      { display: flex; flex-direction: column; line-height: 1.1; }
+.wordmark-main { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--orange); }
+.wordmark-sub  { font-size: 0.65rem; font-weight: 500; color: var(--ink-faint); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Navigation links: About, What We Offer, etc. */
+.nav-links { display: flex; gap: 28px; }
+.nav-links a { font-size: 0.875rem; color: var(--ink-muted); font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--orange); }
+
+/* Hamburger ☰ button — hidden on desktop, visible on mobile */
+.nav-toggle { display: none; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--ink); }
+
+
+/* ============================================================
+   5. HERO — the first section visitors see
+   Two-column layout: heading + button on left, graphic on right.
+   On mobile the graphic is hidden to save space (see responsive).
+   ============================================================ */
+.hero { max-width: var(--max); margin: 0 auto; padding: 80px 32px; }
+
+/* Two-column grid: text left, graphic right */
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+/* Orange pill/badge above the main heading */
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--orange); background: var(--orange-pale);
+  padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.hero h1    { margin-bottom: 20px; }
+.hero-sub   { font-size: 1.05rem; max-width: 480px; margin-bottom: 36px; }
+.hero-cta   { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+/* Primary button — solid orange pill shape */
+.btn {
+  display: inline-block;
+  background: var(--orange); color: #fff;
+  font-size: 0.9rem; font-weight: 500;
+  padding: 13px 28px; border-radius: 50px; /* fully rounded = pill shape */
+  transition: background 0.2s, transform 0.15s;
+}
+.btn:hover { background: var(--orange-light); transform: translateY(-1px); }
+
+/* Secondary ghost link — just underlined text */
+.btn-ghost {
+  font-size: 0.9rem; font-weight: 500;
+  color: var(--ink-muted);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { color: var(--orange); border-color: var(--orange); }
+
+/* ── Hero graphic (right column) ──
+   Contains an animated blob shape with floating cards around it. */
+.hero-graphic { position: relative; height: 340px; }
+
+/* Organic blob shape — animates between different border-radius values */
+.blob {
+  width: 260px; height: 260px;
+  background: var(--orange-pale);
+  border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; /* asymmetric = organic feel */
+  display: flex; align-items: center; justify-content: center;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); /* centers it in the container */
+  animation: blobmorph 8s ease-in-out infinite;
+}
+/* Slowly morphs the blob shape over 8 seconds */
+@keyframes blobmorph {
+  0%,100% { border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; }
+  33%     { border-radius: 40% 60% 45% 55% / 60% 40% 55% 45%; }
+  66%     { border-radius: 55% 45% 60% 40% / 45% 55% 50% 50%; }
+}
+.blob-inner  { text-align: center; }
+.blob-icon   { display: block; font-size: 2.8rem; margin-bottom: 8px; }
+.blob-label  { font-size: 0.8rem; font-weight: 500; color: var(--orange); letter-spacing: 0.05em; }
+
+/* Small floating cards that bob up and down around the blob.
+   .fc1, .fc2, .fc3 set the position of each card.
+   animation-delay staggers them so they don't all move together. */
+.floating-card {
+  position: absolute;
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 0.8rem; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  display: flex; align-items: center; gap: 6px;
+  animation: float 4s ease-in-out infinite;
+}
+.fc1 { top: 20px;   left: 10px;  animation-delay: 0s; }
+.fc2 { top: 20px;   right: 10px; animation-delay: 1.2s; }
+.fc3 { bottom: 40px; left: 50%; transform: translateX(-50%); animation-delay: 2.4s; }
+
+/* Bobs up 8px and back down over 4 seconds */
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
+/* .fc3 needs a separate keyframe to preserve its horizontal centering */
+.fc3 { animation: float3 4s ease-in-out infinite 2.4s; }
+@keyframes float3 {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%     { transform: translateX(-50%) translateY(-8px); }
+}
+
+
+/* ============================================================
+   6. SECTIONS — shared styles used by all content sections
+   ============================================================ */
+
+/* Every <section class="section"> gets generous vertical padding */
+.section { padding: 96px 0; }
+
+/* Warm cream background for alternating sections */
+.section-warm    { background: var(--orange-warm); }
+
+/* Light orange background for the contact section */
+.section-contact { background: var(--orange-pale); }
+
+/* Centers and width-limits content inside a section */
+.container { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+
+/* Small ALL-CAPS label above section headings e.g. "ABOUT US" */
+.section-label {
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 12px;
+}
+
+/* Introductory paragraph below a section heading */
+.section-intro {
+  font-size: 1.05rem; max-width: 560px;
+  margin-top: 12px; margin-bottom: 52px;
+}
+
+
+/* ============================================================
+   7. ABOUT SECTION — two-column: text left, value cards right
+   ============================================================ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: start;
+  margin-top: 8px;
+}
+.about-text h2      { margin-bottom: 20px; }
+.about-text p + p   { margin-top: 14px; }
+
+/* Stack of value cards in the right column */
+.about-values { display: flex; flex-direction: column; gap: 16px; }
+
+/* Individual value card e.g. "Patient & Personalized" */
+.value-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.value-icon  { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.value-card h3 { margin-bottom: 4px; }
+.value-card p  { font-size: 0.875rem; }
+
+
+/* ============================================================
+   8. SUBJECTS SECTION — four-column grid of subject cards
+   To add a subject: copy a .subject-card block in the HTML.
+   The grid adjusts automatically.
+   ============================================================ */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  gap: 20px;
+}
+.subject-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+}
+.subject-icon  { font-size: 1.8rem; margin-bottom: 14px; }
+.subject-card h3 { margin-bottom: 8px; }
+.subject-card p  { font-size: 0.875rem; }
+
+
+/* ============================================================
+   9. GRADES SECTION — K-5 and 6-8 side-by-side display
+   The + divider between them is purely decorative.
+   ============================================================ */
+.grades-row {
+  display: flex; align-items: center;
+  gap: 40px; margin-top: 8px;
+}
+
+/* Each grade band card */
+.grade-band {
+  flex: 1; /* each band takes equal width */
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 40px 36px;
+  text-align: center;
+}
+
+/* The big grade range number e.g. "K – 5" */
+.grade-range {
+  font-family: var(--serif);
+  font-size: 3.5rem; font-weight: 300;
+  color: var(--orange); line-height: 1;
+  margin-bottom: 8px;
+}
+.grade-label {
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: 14px;
+}
+.grade-band p { font-size: 0.9rem; }
+
+/* The + symbol between the two cards */
+.grade-divider {
+  font-family: var(--serif);
+  font-size: 2rem; color: var(--orange-light);
+  flex-shrink: 0; /* prevents it from shrinking */
+}
+
+
+/* ============================================================
+   10. CONTACT SECTION — three info cards in a row
+   Cards for phone, email, and address.
+   Phone and email cards are <a> tags so they're clickable.
+   The address card is a plain <div> (not a link).
+   ============================================================ */
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.contact-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  text-align: center;
+  display: block; /* needed for <a> tags to respect padding */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+/* Lift effect on hover for clickable cards (phone + email) */
+a.contact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(232,98,26,0.12); /* warm orange shadow */
+}
+.contact-card-icon  { font-size: 1.8rem; margin-bottom: 12px; }
+.contact-card-label {
+  font-size: 0.7rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--ink-faint); margin-bottom: 8px;
+}
+.contact-card-value { font-size: 0.95rem; font-weight: 500; color: var(--ink); line-height: 1.5; }
+
+
+/* ============================================================
+   11. FOOTER
+   Three items spread across the bottom bar.
+   flex-wrap: wrap lets them stack on narrow screens.
+   ============================================================ */
+footer { border-top: 1px solid var(--rule); padding: 28px 0; }
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+.footer-name  { font-family: var(--serif); font-size: 0.95rem; color: var(--ink); }
+.footer-copy  { font-size: 0.78rem; color: var(--ink-faint); }
+.footer-email { font-size: 0.78rem; color: var(--ink-faint); transition: color 0.2s; }
+.footer-email:hover { color: var(--orange); }
+
+
+/* ============================================================
+   12. ANIMATIONS
+
+   FADE-IN ON SCROLL:
+   Elements start invisible (opacity: 0) and shifted down 16px.
+   JavaScript watches for them to enter the viewport and adds
+   the .visible class, triggering the CSS transition.
+
+   To make any new element fade in on scroll, add
+   class="fade-target" to it in index.html — no JS changes needed.
+   ============================================================ */
+.fade-target {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-target.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ============================================================
+   13. RESPONSIVE — layout adjustments for smaller screens
+   @media (max-width: Xpx) rules apply only when the screen
+   is narrower than X pixels.
+
+   900px = tablet: collapse multi-column layouts, hide hero graphic
+   640px = mobile: tighten padding, enable hamburger nav
+   ============================================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .hero-inner    { grid-template-columns: 1fr; }  /* stack hero to single column */
+  .hero-graphic  { display: none; }               /* hide blob/floating cards */
+  .about-grid    { grid-template-columns: 1fr; gap: 40px; }
+  .subjects-grid { grid-template-columns: repeat(2, 1fr); } /* 4 cols → 2 cols */
+  .contact-cards { grid-template-columns: 1fr; max-width: 400px; }
+  .grades-row    { flex-direction: column; gap: 16px; }
+  .grade-divider { display: none; } /* hide + sign when stacked vertically */
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .hero      { padding: 56px 20px 60px; }
+  .container { padding: 0 20px; }
+  .nav-inner { padding: 0 20px; }
+  .subjects-grid { grid-template-columns: 1fr; } /* 2 cols → 1 col on small phones */
+
+  /* Nav links hidden by default, shown when .open class is toggled by JS */
+  .nav-links {
+    display: none;
+    position: absolute; top: 60px; left: 0; right: 0;
+    flex-direction: column; gap: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 8px 0;
+  }
+  .nav-links.open { display: flex; } /* JS adds this class on hamburger tap */
+  .nav-links a    { padding: 12px 20px; font-size: 0.9rem; }
+  .nav-toggle     { display: block; } /* show ☰ hamburger on mobile */
+
+  .footer-inner   { flex-direction: column; text-align: center; }
+}

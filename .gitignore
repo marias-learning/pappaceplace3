@@ -1,0 +1,10 @@
+# The built site — no need to commit this,
+# Cloudflare Pages builds it fresh on every deploy.
+_site/
+
+# Node dependencies — never commit these,
+# they get reinstalled automatically during the Cloudflare build.
+node_modules/
+
+# macOS junk file, ignore if you're on a Mac.
+.DS_Store

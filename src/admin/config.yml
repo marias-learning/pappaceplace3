@@ -1,0 +1,87 @@
+# =============================================================
+# BACKEND — tells Sveltia CMS where content lives and how
+# to authenticate. All edits made in the CMS get committed
+# directly to your GitHub repo as real files.
+# =============================================================
+backend:
+  name: github                          # we're using GitHub as the content store
+  repo: marias-learning/pappaceplace3    # replace with your actual GitHub repo
+  branch: main                          # edits commit to this branch
+
+  # This points to the Cloudflare Worker you deploy in Phase 4.
+  # It handles the GitHub OAuth login flow so your friend can
+  # log in with a "Login with GitHub" button instead of managing
+  # personal access tokens. Fill this in after Phase 4.
+  base_url: https://sveltia-cms-auth.maria-b19.workers.dev
+
+
+# =============================================================
+# MEDIA — where uploaded images get stored in the repo,
+# and what path gets written into the HTML/content files.
+# =============================================================
+
+# Where Sveltia saves uploaded files inside the repo
+media_folder: "src/images/uploads"
+
+# The public URL path that gets written into content files
+# (e.g. an img tag will use /images/uploads/photo.jpg)
+public_folder: "/images/uploads"
+
+
+# =============================================================
+# COLLECTIONS — these define what your friend can edit
+# in the CMS. Each collection maps to a file (or folder
+# of files) in the repo.
+#
+# "files" type = a fixed set of named files (good for
+# single-page site settings, about text, contact info, etc.)
+#
+# "folder" type = a growing list of items like blog posts
+# or testimonials (we can add those later).
+# =============================================================
+collections:
+
+  # --- SITE SETTINGS ---
+  # This gives your friend one place to update all the core
+  # info about the business. Each field below maps to a key
+  # in src/_data/site.json, which your Nunjucks templates
+  # can then reference as {{ site.tutorName }} etc.
+  - name: "site_settings"        # internal ID, used by Sveltia
+    label: "Site Settings"       # what your friend sees in the CMS sidebar
+    files:
+
+      - name: "general"
+        label: "General Info"
+        file: "src/_data/site.json"   # the actual file this edits in the repo
+        fields:
+
+          # "string" widget = single line text input
+          - label: "Tutor Name"
+            name: "tutorName"
+            widget: "string"
+
+          - label: "Tagline"
+            name: "tagline"
+            widget: "string"
+            hint: "Short line that appears under the name, e.g. 'Math & Reading Tutor'"
+            # "hint" shows helper text below the field in the CMS editor
+
+          # "text" widget = multi-line text area (no formatting)
+          - label: "About Text"
+            name: "about"
+            widget: "text"
+            hint: "The paragraph that appears in the About section"
+
+          - label: "Phone"
+            name: "phone"
+            widget: "string"
+
+          - label: "Email"
+            name: "email"
+            widget: "string"
+
+          # "image" widget = file upload picker, saves to media_folder above
+          - label: "Profile Photo"
+            name: "photo"
+            widget: "image"
+            required: false    # makes this field optional
