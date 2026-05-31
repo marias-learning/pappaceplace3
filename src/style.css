@@ -312,9 +312,12 @@ nav {
 
 
 /* ============================================================
-   8. SUBJECTS SECTION — four-column grid of subject cards
-   To add a subject: copy a .subject-card block in the HTML.
-   The grid adjusts automatically.
+   8. SUBJECTS SECTION — subject card grid
+   Cards are managed entirely in the CMS — add, remove, or
+   reorder them there. The grid fills left-to-right and wraps
+   automatically; no code changes needed when the count changes.
+   4 cards = 4 columns. On tablet: 2 columns. On mobile: 1 column.
+   (See §13 Responsive for the breakpoint overrides.)
    ============================================================ */
 .subjects-grid {
   display: grid;
@@ -333,8 +336,11 @@ nav {
 
 
 /* ============================================================
-   9. GRADES SECTION — K-5 and 6-8 side-by-side display
-   The + divider between them is purely decorative.
+   9. GRADES SECTION — two grade band cards side by side
+   The grade range (e.g. "K – 5"), card label (e.g. "Elementary
+   School"), and description are all editable in the CMS.
+   The + divider between the two cards is purely decorative
+   and is hidden on mobile when the cards stack vertically.
    ============================================================ */
 .grades-row {
   display: flex; align-items: center;
@@ -430,10 +436,13 @@ footer { border-top: 1px solid var(--rule); padding: 28px 0; }
    FADE-IN ON SCROLL:
    Elements start invisible (opacity: 0) and shifted down 16px.
    JavaScript watches for them to enter the viewport and adds
-   the .visible class, triggering the CSS transition.
+   the .visible class, triggering the CSS transition below.
 
-   To make any new element fade in on scroll, add
-   class="fade-target" to it in index.html — no JS changes needed.
+   The JS in index.njk automatically adds .fade-target to:
+     .value-card, .subject-card, .grade-band, .contact-card
+   To make any other new element fade in on scroll, either:
+   (a) add its selector to that querySelectorAll list in the JS, or
+   (b) add class="fade-target" directly to the element in index.njk
    ============================================================ */
 .fade-target {
   opacity: 0;

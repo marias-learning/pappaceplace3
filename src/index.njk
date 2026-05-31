@@ -3,90 +3,153 @@
   PAPPACE PLACE LEARNING STUDIO — index.njk
   pappaceplace.com
 
-  Nunjucks template processed by Eleventy.
-  DO NOT edit text content here — use /admin instead.
-  All content variables come from src/_data/home.json via Sveltia CMS.
+  This is a Nunjucks template processed by Eleventy at build time.
+  The {{ home.* }} variables are replaced with real content from
+  src/_data/home.json before the page is published.
+
+  ── WHERE TO EDIT THINGS ────────────────────────────────────────
+  Text content  →  /admin/  (the CMS — all {{ home.* }} variables)
+  Layout/design →  this file (structure, which elements appear)
+  Colors/fonts  →  style.css (Section 2: Design Tokens)
+
+  ── HOW VARIABLES WORK ──────────────────────────────────────────
+  {{ home.some_key }}   outputs the value of "some_key" from home.json
+  {% if home.x %}       only renders the block if x is not empty
+  {% for item in ... %} repeats a block for each item in a list
+  | safe                allows HTML tags inside a variable (e.g. <br>)
 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO: title and description come from the CMS "SEO" fields -->
   <title>{{ home.meta_title }}</title>
   <meta name="description" content="{{ home.meta_description }}">
+
+  <!-- Google Fonts: Fraunces (headings) + Plus Jakarta Sans (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-  <!-- NAV -->
+
+  <!-- ============================================================
+    NAV — sticky top bar with logo and anchor links
+    Links scroll smoothly to each section via JS at the bottom.
+    Nav link labels come from the CMS so they can match
+    whatever the section headings are renamed to.
+    On mobile the links collapse behind the ☰ hamburger button.
+  ============================================================ -->
   <nav>
     <div class="nav-inner">
+
+      <!-- Wordmark: two-line brand name in the top-left -->
       <a href="/" class="wordmark">
         <span class="wordmark-main">Pappace Place</span>
         <span class="wordmark-sub">Learning Studio</span>
       </a>
+
+      <!-- Nav links — labels editable in CMS under "Navigation Labels" -->
       <div class="nav-links">
-        <a href="#about">About</a>
-        <a href="#what-we-offer">What We Offer</a>
-        <a href="#who-we-help">Who We Help</a>
-        <a href="#contact">Contact</a>
+        <a href="#about">{{ home.nav_about }}</a>
+        <a href="#what-we-offer">{{ home.nav_offer }}</a>
+        <a href="#who-we-help">{{ home.nav_help }}</a>
+        <a href="#contact">{{ home.nav_contact }}</a>
       </div>
+
+      <!-- Hamburger button — only visible on mobile (see style.css §13) -->
       <button class="nav-toggle" aria-label="Menu">☰</button>
     </div>
   </nav>
 
 
-  <!-- HERO -->
+  <!-- ============================================================
+    HERO — the first thing visitors see
+    Left column: eyebrow badge, main heading, tagline, CTA buttons.
+    Right column: animated blob graphic with floating subject cards.
+    If a hero_image is uploaded in the CMS, it replaces the blob.
+    On mobile the right column is hidden (see style.css §13).
+  ============================================================ -->
   <section class="hero">
     <div class="hero-inner">
+
+      <!-- Left: text content -->
       <div class="hero-text">
+        <!-- Orange pill badge — small location label above the heading -->
         <div class="hero-eyebrow">New Paltz, NY</div>
+
+        <!-- Main heading — hardcoded; italic <em> renders in orange -->
         <h1>Every student<br>can <em>thrive.</em></h1>
+
+        <!-- Tagline paragraph — editable in CMS under "Hero: Tagline" -->
         <p class="hero-sub">{{ home.hero_tagline }}</p>
+
+        <!-- Two CTA buttons: primary (orange) and ghost (text link) -->
         <div class="hero-cta">
           <a href="#contact" class="btn">Get in touch →</a>
           <a href="#what-we-offer" class="btn-ghost">Learn more</a>
         </div>
       </div>
 
+      <!-- Right: graphic (hidden on mobile) -->
       <div class="hero-graphic" aria-hidden="true">
         {% if home.hero_image %}
+          <!-- If a photo was uploaded in the CMS, show it instead of the blob -->
           <img src="{{ home.hero_image }}" alt="" class="hero-img">
         {% else %}
+          <!-- Default: animated blob shape with an icon and label inside -->
           <div class="blob">
             <div class="blob-inner">
               <span class="blob-icon">📚</span>
               <span class="blob-label">Learning made fun</span>
             </div>
           </div>
+          <!-- Three small floating cards that bob around the blob -->
           <div class="floating-card fc1"><span>✏️</span> Elementary</div>
           <div class="floating-card fc2"><span>🔬</span> Middle School</div>
           <div class="floating-card fc3"><span>⭐</span> All Subjects</div>
         {% endif %}
       </div>
+
     </div>
   </section>
 
 
-  <!-- ABOUT -->
+  <!-- ============================================================
+    ABOUT — two-column section: text left, value cards right
+    Section label, heading, and both paragraphs are CMS-editable.
+    The optional bio paragraph and photo only render if filled in.
+    Value cards are a repeatable list — add/remove/reorder in CMS.
+  ============================================================ -->
   <section class="section" id="about">
     <div class="container">
-      <div class="section-label">About us</div>
+
+      <!-- Small ALL-CAPS label above the heading — editable in CMS -->
+      <div class="section-label">{{ home.section_label_about }}</div>
+
       <div class="about-grid">
 
+        <!-- Left column: heading + paragraphs -->
         <div class="about-text">
           <h2>{{ home.about_heading }}</h2>
           <p>{{ home.about_p1 }}</p>
           <p>{{ home.about_p2 }}</p>
+
+          <!-- Optional bio paragraph — only shows if filled in the CMS -->
           {% if home.about_bio %}
             <p>{{ home.about_bio }}</p>
           {% endif %}
+
+          <!-- Optional photo — only shows if uploaded in the CMS -->
           {% if home.about_image %}
             <img src="{{ home.about_image }}" alt="Miss Maria" class="about-photo">
           {% endif %}
         </div>
 
+        <!-- Right column: value cards loop -->
         <div class="about-values">
           {% for card in home.value_cards %}
             <div class="value-card">
@@ -104,13 +167,23 @@
   </section>
 
 
-  <!-- WHAT WE OFFER -->
+  <!-- ============================================================
+    WHAT WE OFFER — warm cream background, subject card grid
+    Section label, heading, and intro paragraph are CMS-editable.
+    Subject cards are a repeatable list — add/remove/reorder in CMS.
+    The optional services note (pricing, scheduling etc.) only
+    renders if filled in the CMS.
+  ============================================================ -->
   <section class="section section-warm" id="what-we-offer">
     <div class="container">
-      <div class="section-label">What we offer</div>
+
+      <!-- Small ALL-CAPS label above the heading — editable in CMS -->
+      <div class="section-label">{{ home.section_label_offer }}</div>
+
       <h2>{{ home.offer_heading }}</h2>
       <p class="section-intro">{{ home.offer_intro }}</p>
 
+      <!-- Subject cards grid — loops over the CMS list -->
       <div class="subjects-grid">
         {% for card in home.subject_cards %}
           <div class="subject-card">
@@ -121,55 +194,89 @@
         {% endfor %}
       </div>
 
+      <!-- Optional note below the grid (e.g. pricing or scheduling info) -->
       {% if home.services_note %}
         <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.services_note }}</p>
       {% endif %}
+
     </div>
   </section>
 
 
-  <!-- WHO WE HELP -->
+  <!-- ============================================================
+    WHO WE HELP — two grade band cards side by side
+    Section label, heading, and intro paragraph are CMS-editable.
+    Each grade band's label, range (e.g. "K – 5"), and description
+    are all independently editable in the CMS.
+  ============================================================ -->
   <section class="section" id="who-we-help">
     <div class="container">
-      <div class="section-label">Who we help</div>
+
+      <!-- Small ALL-CAPS label above the heading — editable in CMS -->
+      <div class="section-label">{{ home.section_label_help }}</div>
+
       <h2>{{ home.help_heading }}</h2>
       <p class="section-intro">{{ home.help_intro }}</p>
 
       <div class="grades-row">
+
+        <!-- Elementary card -->
         <div class="grade-band">
-          <div class="grade-range">K – 5</div>
-          <div class="grade-label">Elementary School</div>
+          <div class="grade-range">{{ home.elementary_range }}</div>
+          <div class="grade-label">{{ home.elementary_label }}</div>
           <p>{{ home.elementary_description }}</p>
         </div>
+
+        <!-- Decorative + divider between the two cards (hidden on mobile) -->
         <div class="grade-divider" aria-hidden="true">+</div>
+
+        <!-- Middle School card -->
         <div class="grade-band">
-          <div class="grade-range">6 – 8</div>
-          <div class="grade-label">Middle School</div>
+          <div class="grade-range">{{ home.middle_range }}</div>
+          <div class="grade-label">{{ home.middle_label }}</div>
           <p>{{ home.middle_description }}</p>
         </div>
+
       </div>
     </div>
   </section>
 
 
-  <!-- CONTACT -->
+  <!-- ============================================================
+    CONTACT — light orange background, three info cards
+    Section label, heading, and intro paragraph are CMS-editable.
+    Phone renders as a tel: link (tap to call on mobile).
+    Email renders as a mailto: link.
+    Address renders as a Google Maps link if address_map_link
+    is filled in the CMS, otherwise plain text.
+    Optional hours line only renders if filled in the CMS.
+  ============================================================ -->
   <section class="section section-contact" id="contact">
     <div class="container">
-      <div class="section-label">Get in touch</div>
+
+      <!-- Small ALL-CAPS label above the heading — editable in CMS -->
+      <div class="section-label">{{ home.section_label_contact }}</div>
+
       <h2>{{ home.contact_heading }}</h2>
       <p class="section-intro">{{ home.contact_intro }}</p>
 
       <div class="contact-cards">
+
+        <!-- Phone card — strips formatting to build a clean tel: link -->
         <a href="tel:{{ home.phone | replace('(', '') | replace(')', '') | replace(' ', '') | replace('-', '') }}" class="contact-card">
           <div class="contact-card-icon">📞</div>
           <div class="contact-card-label">Call or text</div>
           <div class="contact-card-value">{{ home.phone }}</div>
         </a>
+
+        <!-- Email card — builds a mailto: link automatically -->
         <a href="mailto:{{ home.email }}" class="contact-card">
           <div class="contact-card-icon">✉️</div>
           <div class="contact-card-label">Email</div>
           <div class="contact-card-value">{{ home.email }}</div>
         </a>
+
+        <!-- Address card — clickable Maps link if address_map_link is set -->
         {% if home.address_map_link %}
           <a href="{{ home.address_map_link }}" target="_blank" rel="noopener" class="contact-card">
         {% else %}
@@ -177,22 +284,30 @@
         {% endif %}
           <div class="contact-card-icon">📍</div>
           <div class="contact-card-label">Location</div>
+          <!-- | safe allows the <br> in the address value to render as a line break -->
           <div class="contact-card-value">{{ home.address | safe }}</div>
         {% if home.address_map_link %}
           </a>
         {% else %}
           </div>
         {% endif %}
+
       </div>
 
+      <!-- Optional hours line below the cards -->
       {% if home.hours %}
         <p style="text-align:center; margin-top:32px; color:var(--ink-muted)">{{ home.hours }}</p>
       {% endif %}
+
     </div>
   </section>
 
 
-  <!-- FOOTER -->
+  <!-- ============================================================
+    FOOTER — simple bottom bar with studio name, year, and email
+    Update footer_year each January in the CMS under "Footer".
+    The studio name and location are hardcoded here.
+  ============================================================ -->
   <footer>
     <div class="container footer-inner">
       <span class="footer-name">Pappace Place Learning Studio</span>
@@ -202,8 +317,28 @@
   </footer>
 
 
-  <!-- JAVASCRIPT — unchanged -->
+  <!-- ============================================================
+    JAVASCRIPT — three small behaviors, no libraries needed
+
+    1. MOBILE NAV TOGGLE
+       Clicking ☰ adds/removes the .open class on .nav-links,
+       which shows/hides the dropdown menu (see style.css §13).
+       Clicking any nav link also closes the menu.
+
+    2. SMOOTH SCROLL
+       All anchor links (href="#section") scroll smoothly instead
+       of jumping. The browser's scroll-behavior: smooth in CSS
+       handles most cases; this JS version handles edge cases.
+
+    3. FADE-IN ON SCROLL
+       An IntersectionObserver watches cards and grade bands.
+       When an element enters the viewport, .visible is added,
+       triggering the CSS opacity/translate transition (style.css §12).
+       To make any new element fade in, add class="fade-target"
+       to it in the HTML — no JS changes needed.
+  ============================================================ -->
   <script>
+    // 1. Mobile nav toggle
     const toggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
     toggle.addEventListener('click', () => navLinks.classList.toggle('open'));
@@ -211,6 +346,7 @@
       l.addEventListener('click', () => navLinks.classList.remove('open'));
     });
 
+    // 2. Smooth scroll for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const target = document.querySelector(a.getAttribute('href'));
@@ -221,14 +357,15 @@
       });
     });
 
+    // 3. Fade-in on scroll
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           e.target.classList.add('visible');
-          observer.unobserve(e.target);
+          observer.unobserve(e.target); // stop watching once visible — no repeat
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.1 }); // trigger when 10% of the element is in view
 
     document.querySelectorAll('.value-card, .subject-card, .grade-band, .contact-card').forEach(el => {
       el.classList.add('fade-target');
