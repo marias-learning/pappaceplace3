@@ -4,19 +4,19 @@
   pappaceplace.com
 
   This is a Nunjucks template processed by Eleventy at build time.
-  The {{ home.* }} variables are replaced with real content from
+  The home.* variables are replaced with real content from
   src/_data/home.json before the page is published.
 
   ── WHERE TO EDIT THINGS ────────────────────────────────────────
-  Text content  →  /admin/  (the CMS — all {{ home.* }} variables)
+  Text content  →  /admin/  (the CMS — all home.* variables)
   Layout/design →  this file (structure, which elements appear)
   Colors/fonts  →  style.css (Section 2: Design Tokens)
 
   ── HOW VARIABLES WORK ──────────────────────────────────────────
-  {{ home.some_key }}   outputs the value of "some_key" from home.json
-  {% if home.x %}       only renders the block if x is not empty
-  {% for item in ... %} repeats a block for each item in a list
-  | safe                allows HTML tags inside a variable (e.g. <br>)
+  home.some_key   outputs the value of "some_key" from home.json
+  if home.x       only renders the block if x is not empty
+  for item in ... repeats a block for each item in a list
+  | safe          allows HTML tags inside a variable (e.g. <br>)
 -->
 <html lang="en">
 <head>
