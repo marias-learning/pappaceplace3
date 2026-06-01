@@ -1,8 +1,13 @@
 {
   "meta_title": "Pappace Place Learning Studio — Tutoring in New Paltz, NY",
   "meta_description": "Pappace Place Learning Studio offers personalized tutoring for elementary and middle school students in New Paltz, NY.",
+  "nav_about": "About",
+  "nav_offer": "What We Offer",
+  "nav_help": "Who We Help",
+  "nav_contact": "Contact",
   "hero_tagline": "Personalized tutoring for elementary and middle school students in a warm, supportive environment where curiosity is celebrated and confidence grows.",
   "hero_image": "",
+  "section_label_about": "About us",
   "about_heading": "A place where students feel at home.",
   "about_p1": "Pappace Place Learning Studio is a tutoring center in New Paltz, NY dedicated to helping elementary and middle school students build the skills and confidence they need to succeed — in school and beyond.",
   "about_p2": "We believe every student learns differently. Our approach is patient, personalized, and always encouraging. Whether a student is catching up, keeping up, or getting ahead, we meet them exactly where they are.",
@@ -25,46 +30,41 @@
       "description": "We celebrate progress at every level — from small wins to big breakthroughs."
     }
   ],
+  "section_label_offer": "What we offer",
   "offer_heading": "General tutoring for growing minds.",
   "offer_intro": "We work with students across core subjects, helping them build strong foundations and develop good study habits that last.",
   "subject_cards": [
     {
       "icon": "📖",
-      "heading": "Reading & Writing",
-      "description": "Comprehension, vocabulary, essay writing, and communication skills."
+      "heading": "Reading",
+      "description": "Phonemic awareness\nPhonics\nFluency\nVocabulary\nComprehension\nOrganization and Study Skills"
     },
     {
       "icon": "➕",
       "heading": "Math",
-      "description": "From basic arithmetic through pre-algebra and beyond — building real number sense."
+      "description": "Concrete, pictorial, and abstract \nProcedures and strategies\nFluency, reasoning, problem solving\nOrganization and Study Skills"
     },
     {
       "icon": "🌍",
-      "heading": "Science & Social Studies",
-      "description": "Homework help and concept review across grade-level topics."
+      "heading": "Writing",
+      "description": "DevelopingSentences and Paragraph\nEssay Writing\nNarrative and Poetry Writing\nResponse to Reading\nGrammar\nMechanics\nSpelling\nVocabulary\nOrganization and Study Skills"
     },
     {
       "icon": "📝",
-      "heading": "Study Skills",
-      "description": "Organization, note-taking, test prep, and habits that help in every class."
+      "heading": "Consulting and Collaboration",
+      "description": "Goal setting and progress update meetings\nSupport preparing for school meetings\nSupport navigating IEP and 504 goals and  accommodations\nHelp with homework strategies and organization of space and materials"
     }
   ],
   "services_note": "",
+  "section_label_help": "Who we help",
   "help_heading": "Elementary & middle school students.",
   "help_intro": "We work with students in grades K–8 from New Paltz and the surrounding Hudson Valley area.",
-  "elementary_label": "Elementary School",
   "elementary_range": "K – 5",
+  "elementary_label": "Elementary School",
   "elementary_description": "Building foundational skills in reading, writing, and math in a fun, low-pressure environment.",
-  "middle_label": "Middle School",
   "middle_range": "6 – 8",
+  "middle_label": "Middle School",
   "middle_description": "Navigating more complex subjects, developing independence, and preparing for high school.",
-  "nav_about": "About",
-  "nav_offer": "What We Offer",
-  "nav_help": "Who We Help",
-  "nav_contact": "Contact",
-  "section_label_about": "About us",
-  "section_label_offer": "What we offer",
-  "section_label_help": "Who we help",
   "section_label_contact": "Get in touch",
   "contact_heading": "Ready to get started?",
   "contact_intro": "Reach out to learn more, ask questions, or schedule a first session. We'd love to hear from you.",
